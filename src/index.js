@@ -1,4 +1,4 @@
-import GameState from 'states/GameState';
+import GameState from 'states/Intro';
 
 class Game extends Phaser.Game {
 
