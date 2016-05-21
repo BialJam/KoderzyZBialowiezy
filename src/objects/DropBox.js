@@ -1,4 +1,8 @@
+
+
 class DropBox extends Phaser.Sprite {
+	
+
 	constructor(game, x, y) {
 		super(game, x, y);
 		this.game.physics.enable(this, Phaser.Physics.ARCADE);

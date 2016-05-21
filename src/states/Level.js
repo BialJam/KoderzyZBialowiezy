@@ -10,16 +10,19 @@ class Level extends Phaser.State {
 
 	preload() {
 
-		this.itemsMap = ['watermelon', 'apple', 'bread', 'junk'];
-		this.badItems = ['watermelon', 'apple'];
-		this.goodItems = ['bread', 'junk'];
+		this.itemsMap = ['shit', 'used_condom', 'bomb', 'glock', 'water_melon', 'banana', 'brick', 'cola', 'durex', 'oreo', 'snickers'];
+		this.badItems = ['shit', 'used_condom', 'bomb', 'glock'];
+		this.goodItems = ['water_melon', 'banana', 'brick', 'cola', 'durex', 'oreo', 'snickers'];
 
 		this.load.audio('music', 'assets/music.mp3');
-		this.load.image('trash', 'assets/trash-icon.png');
-		this.itemsCount = 4;
-		for(let i = 1; i < 5; i++) {
-			name = this.itemsMap[i-1];
-			this.load.image(name, 'assets/item' + i.toString() + '.jpg');
+		this.load.image('background', 'assets/background.png');
+		this.load.image('line', 'assets/line.png');
+		this.load.image('trash', 'assets/trash.png');
+		this.load.image('box', 'assets/box.png');
+		this.itemsCount = this.itemsMap.length;
+		for(var item in this.itemsMap) {
+			var name = this.itemsMap[item];
+			this.load.image(name, 'assets/' + name + '.png');
 		}
 		this.itemSize = 40;
 		this.speed = 50;
@@ -57,6 +60,7 @@ class Level extends Phaser.State {
 		if (this.okBoxGroup.length != this.currentItem.count) {
 			this.missed++;
 		}
+		this.updateText();
 	}
 
 	clearBadBox() {
@@ -64,9 +68,14 @@ class Level extends Phaser.State {
 		if (this.badBoxGroup.length < 4) {
 			this.missed++;
 		}
+		this.updateText();
 	}
 
 	create() {
+		this.game.add.sprite(0, 0, 'background');
+		this.game.add.sprite(this.game.world.centerX-70, 0, 'line');
+		this.game.add.sprite(this.game.world.centerX+100, this.game.world._height - 190, 'box');
+		this.game.add.sprite(this.game.world.centerX-280, this.game.world._height - 190, 'trash');
 		// music
 		this.music = this.add.audio('music', 0.5, true);
 		// this.music.play();
@@ -85,9 +94,6 @@ class Level extends Phaser.State {
 
 		aKey.onDown.add(this.clearBadBox, this);
 		dKey.onDown.add(this.clearOkBox, this);
-
-		// set background color
-		this.stage.backgroundColor = '#c0c0c0'
 
 		this.dumpBox = new DumpSprite(this.game, this.game.world.centerX, this.game.world.centerY);
 		this.dumpBox.body.setSize(220, 10, -90, 0);
@@ -142,7 +148,7 @@ class Level extends Phaser.State {
 		let rand = this.getRandomNumber(this.itemsCount);
 		let type = this.itemsMap[rand];
 		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSizem, type);
-		// item.body.velocity.y = this.speed;
+		item.body.velocity.y = this.speed;
 		this.particleGroup.add(item);
 	}
 
