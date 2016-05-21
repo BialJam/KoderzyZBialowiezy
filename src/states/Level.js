@@ -1,5 +1,6 @@
 import GameParticle from 'objects/GameParticle'
 import DumpSprite from 'objects/DumpSprite'
+import DropBox from 'objects/DropBox'
 
 class Level extends Phaser.State {
 
@@ -71,7 +72,7 @@ class Level extends Phaser.State {
 		// this.music.play();
 		this.timer = this.game.time.create(false);
 		this.timer.loop(20000, this.updateCounter, this);
-		this.timer.start();
+		// this.timer.start();
 
 		let leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 		let rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
@@ -93,11 +94,8 @@ class Level extends Phaser.State {
 
 		this.catchZone = new DumpSprite(this.game, this.game.world.centerX, this.game.world.centerY - 50);
 
-		this.okBox = new DumpSprite(this.game, this.game.world.centerX + 100, this.game.world.centerY - 50);
-		this.okBox.body.setSize(10, 100, 20, -40);
-
-		this.badBox = new DumpSprite(this.game, this.game.world.centerX - 100, this.game.world.centerY - 50);
-		this.badBox.body.setSize(10, 100, 0, -40);
+		this.okBox = new DropBox(this.game, this.game.world.centerX + 100, this.game.world.centerY - 50);
+		this.badBox = new DropBox(this.game, this.game.world.centerX - 120, this.game.world.centerY - 50);
 
 		this.particleGroup = this.game.add.group();
 		this.flyGroup = this.game.add.group();
@@ -144,7 +142,7 @@ class Level extends Phaser.State {
 		let rand = this.getRandomNumber(this.itemsCount);
 		let type = this.itemsMap[rand];
 		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSizem, type);
-		item.body.velocity.y = this.speed;
+		// item.body.velocity.y = this.speed;
 		this.particleGroup.add(item);
 	}
 
@@ -207,13 +205,12 @@ class Level extends Phaser.State {
 
 		this.timer += this.game.time.elapsed;
 
-		if (this.timer > 250) {
+		if (this.timer > 1000) {
 			this.timer = 0;
-			if (Phaser.Utils.chanceRoll(50)) {
+			if (Phaser.Utils.chanceRoll(30)) {
 				this.generateParticle();
 				this.lastTime = this.timer;
 			}
-
 		}
 
 		this.game.physics.arcade.overlap(this.particleGroup, this.dumpBox, this.collision, null, this);
