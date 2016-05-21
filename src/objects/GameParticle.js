@@ -10,13 +10,7 @@ class GameParticle extends Phaser.Sprite {
 	}
 
 	update() {
-		this.game.physics.arcade.collide(this, this.game.dumpBox, this.collision);
-		this.game.debug.body(this);
-	}
-
-	// collsion with dumpbox
-	collision (obj1, obj2) {
-		obj1.game.missed++;
+		// this.game.debug.body(this);
 	}
 }
 

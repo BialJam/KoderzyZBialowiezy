@@ -19,7 +19,7 @@ class Level extends Phaser.State {
 		this.speed = 200;
 		this.time = 0
 		this.border = this.game.world._height - 40;
-		this.game.missed = 0;
+		this.missed = 0;
 		this.availbleMisses = 3;
 		this.lastTime = 0;
 	}
@@ -32,16 +32,25 @@ class Level extends Phaser.State {
 		// set background color
 		this.stage.backgroundColor = '#c0c0c0'
 		
-		this.game.dumpBox = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "junk");
-		this.game.dumpBox.anchor.set(0.5);
-		this.game.physics.enable(this.game.dumpBox, Phaser.Physics.ARCADE);
-		this.game.dumpBox.body.immovable = true;
+		this.dumpBox = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "junk");
+		this.dumpBox.anchor.set(0.5);
+		this.game.physics.enable(this.dumpBox, Phaser.Physics.ARCADE);
+		this.dumpBox.body.immovable = true;
+
+		this.particleGroup = this.game.add.group();
 	}
 
 	generateParticle() {
 		let rand = this.getRandomNumber(this.itemsCount);
 		let type = this.itemsMap[rand];
 		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSize, type);
+		this.particleGroup.add(item);
+	}
+
+	collision(obj1, obj2) {
+		this.missed++;
+		obj2.kill();
+		// obj1.destroy();
 	}
 
 	update() {
@@ -51,8 +60,10 @@ class Level extends Phaser.State {
 			this.generateParticle();
 		}
 
+		this.game.physics.arcade.overlap(this.particleGroup, this.dumpBox, this.collision, null, this);
+
 		// check if user missed to many items
-		if (this.game.missed >= this.availbleMisses) {
+		if (this.missed >= this.availbleMisses) {
 			this.music.stop();
 			this.game.state.start('Intro');
 		}
