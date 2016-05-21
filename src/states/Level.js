@@ -53,6 +53,9 @@ class Level extends Phaser.State {
 	clearOkBox() {
 		this.okBoxGroup.removeAll();
 		this.generateCurrentItemRequest();
+		if (this.okBoxGroup.length != this.currentItem.count) {
+			this.missed++;
+		}
 	}
 
 	clearBadBox() {
@@ -179,7 +182,6 @@ class Level extends Phaser.State {
 
 	inOkBox(box, obj) {
 		this.flyGroup.remove(obj);
-		console.log(obj.key);
 		if(this.okBoxGroup.length >= this.currentItem.count || obj.key != this.currentItem.type) {
 			this.flewOverGroup.add(obj);
 			this.missed++;
@@ -217,7 +219,7 @@ class Level extends Phaser.State {
 		// check if user missed to many items
 		if (this.missed >= this.availbleMisses) {
 			this.music.stop();
-			this.game.state.start('Lose');
+			this.game.state.start('Level');
 		}
 
 		/*
