@@ -26,10 +26,32 @@ class Level extends Phaser.State {
 		this.lastTime = 0;
 	}
 
+	catchLeft() {
+		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
+			direction: -1,
+			group: this.particleGroup,
+			destGroup: this.boxGroup
+		});
+	}
+
+	catchRight() {
+		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
+			direction: 1,
+			group: this.particleGroup,
+			destGroup: this.boxGroup
+		});
+	}
+
 	create() {
 		// music
 		this.music = this.add.audio('music', 0.5, true);
 		this.music.play();
+
+		let leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+		let rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+
+		leftKey.onDown.add(this.catchLeft, this);
+		rightKey.onDown.add(this.catchRight, this);
 
 		// set background color
 		this.stage.backgroundColor = '#c0c0c0'
@@ -91,20 +113,6 @@ class Level extends Phaser.State {
 		if (this.missed >= this.availbleMisses) {
 			this.music.stop();
 			this.game.state.start('Intro');
-		}
-
-		//button clicked
-		if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-			// check if match
-			let direction = 1;
-			if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-				direction = -1;
-			}
-			let gotBox = this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
-				direction: direction,
-				group: this.particleGroup,
-				destGroup: this.boxGroup
-			});
 		}
 	}
 
