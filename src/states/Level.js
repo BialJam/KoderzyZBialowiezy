@@ -68,14 +68,7 @@ class Level extends Phaser.State {
 	create() {
 		// music
 		this.music = this.add.audio('music', 0.5, true);
-		//this.music.play();
-		
-		// gamepad
-		/*
-
-		*/
-
-
+		// this.music.play();
 		this.timer = this.game.time.create(false);
 		this.timer.loop(20000, this.updateCounter, this);
 		this.timer.start();
@@ -122,6 +115,10 @@ class Level extends Phaser.State {
 		this.trashCountText.anchor.set(0.5);
 		this.itemsCountText.anchor.set(0.5);
 		this.generateCurrentItemRequest();
+
+		this.lastTime = this.game.time.now;
+
+		this.timer = 0;
 	}
 
 	addStaticText(style) {
@@ -207,9 +204,16 @@ class Level extends Phaser.State {
 
 	update() {
 		//alert(this.timer.duration);
-		if (Phaser.Utils.chanceRoll(1)) {
-			this.generateParticle();
-			this.lastTime = this.timer;
+
+		this.timer += this.game.time.elapsed;
+
+		if (this.timer > 250) {
+			this.timer = 0;
+			if (Phaser.Utils.chanceRoll(50)) {
+				this.generateParticle();
+				this.lastTime = this.timer;
+			}
+
 		}
 
 		this.game.physics.arcade.overlap(this.particleGroup, this.dumpBox, this.collision, null, this);
