@@ -161,7 +161,9 @@ class Level extends Phaser.State {
 	}
 
 	collision(obj1, obj2) {
-		this.missed++;
+		if (!(this.goodItems.indexOf(obj2.key) > -1 && obj2.key != this.currentItem.type)) {
+			this.missed++;
+		}
 		this.particleGroup.remove(obj2);
 	}
 
