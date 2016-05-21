@@ -26,14 +26,40 @@ class Level extends Phaser.State {
 		this.lastTime = 0;
 	}
 
+	catchLeft() {
+		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
+			direction: -1,
+			group: this.particleGroup,
+			destGroup: this.boxGroup,
+			game: this.game
+		});
+	}
+
+	catchRight() {
+		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
+			direction: 1,
+			group: this.particleGroup,
+			destGroup: this.boxGroup,
+			game: this.game
+		});
+	}
+
 	create() {
 		// music
 		this.music = this.add.audio('music', 0.5, true);
 		//this.music.play();
 
 		// gamepad
+		/*
 		this.game.input.gamepad.start();
     	this.pad1 = this.game.input.gamepad.pad1;
+		*/
+		
+		let leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+		let rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+
+		leftKey.onDown.add(this.catchLeft, this);
+		rightKey.onDown.add(this.catchRight, this);
 
 		// set background color
 		this.stage.backgroundColor = '#c0c0c0'
@@ -57,7 +83,7 @@ class Level extends Phaser.State {
 	generateParticle() {
 		let rand = this.getRandomNumber(this.itemsCount);
 		let type = this.itemsMap[rand];
-		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSize);
+		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSizem, type);
 		item.body.velocity.y = this.speed;
 		this.particleGroup.add(item);
 	}
@@ -73,6 +99,9 @@ class Level extends Phaser.State {
 		this.destGroup.add(obj);
 		obj.body.velocity.y = 0;
 		obj.body.velocity.x = this.direction * 80;
+
+		this.game.add.tween(obj).to( { angle: 45 }, 1000, Phaser.Easing.Linear.None, true, 250);
+    	this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1000, Phaser.Easing.Linear.None, true, 250);
 	}
 
 	inOkBox(box, obj) {
@@ -100,10 +129,10 @@ class Level extends Phaser.State {
 			this.game.state.start('Intro');
 		}
 
-
+		/*
 		let rightStickX = false;
 		let rightStickY = false;
-		/*
+		
 	    if (this.pad1.connected)
 	    {
 	        rightStickX = this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_RIGHT_X);
