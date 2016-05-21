@@ -1,4 +1,6 @@
 import GameParticle from 'objects/GameParticle'
+import DumpSprite from 'objects/DumpSprite'
+
 class Level extends Phaser.State {
 
 	init() {
@@ -32,10 +34,7 @@ class Level extends Phaser.State {
 		// set background color
 		this.stage.backgroundColor = '#c0c0c0'
 		
-		this.dumpBox = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "junk");
-		this.dumpBox.anchor.set(0.5);
-		this.game.physics.enable(this.dumpBox, Phaser.Physics.ARCADE);
-		this.dumpBox.body.immovable = true;
+		this.dumpBox = new DumpSprite(this.game, this.game.world.centerX, this.game.world.centerY);
 
 		this.particleGroup = this.game.add.group();
 	}
