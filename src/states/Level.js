@@ -10,11 +10,13 @@ class Level extends Phaser.State {
 	preload() {
 
 		this.itemsMap = ['watermelon', 'apple', 'bread', 'junk'];
+		this.goodItems = [0,1,2];
 
 		this.load.audio('music', 'assets/music.mp3');
+		this.load.image('trash', 'assets/trash-icon.png');
 		this.itemsCount = 4;
 		for(let i = 1; i < 5; i++) {
-			name = this.itemsMap[i];
+			name = this.itemsMap[i-1];
 			this.load.image(name, 'assets/item' + i.toString() + '.jpg');
 		}
 		this.itemSize = 40;
@@ -22,8 +24,9 @@ class Level extends Phaser.State {
 		this.time = 0
 		this.border = this.game.world._height - 40;
 		this.missed = 0;
-		this.availbleMisses = 3;
+		this.availbleMisses = 6;
 		this.lastTime = 0;
+		this.level = 0;
 	}
 
 	catchLeft() {
@@ -45,24 +48,32 @@ class Level extends Phaser.State {
 	}
 
 	clearOkBox() {
-		this.okBoxGroup.removeAll()
+		this.okBoxGroup.removeAll();
+		this.generateCurrentItemRequest();
 	}
 
 	clearBadBox() {
-		this.badBoxGroup.removeAll()
+		this.badBoxGroup.removeAll();
+		if (this.badBoxGroup.length < 4) {
+			this.missed++;
+		}
 	}
 
 	create() {
 		// music
 		this.music = this.add.audio('music', 0.5, true);
 		//this.music.play();
-
+		
 		// gamepad
 		/*
-		this.game.input.gamepad.start();
-    	this.pad1 = this.game.input.gamepad.pad1;
+
 		*/
-		
+
+
+		this.timer = this.game.time.create(false);
+		this.timer.loop(20000, this.updateCounter, this);
+		this.timer.start();
+
 		let leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 		let rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
@@ -74,6 +85,8 @@ class Level extends Phaser.State {
 
 		aKey.onDown.add(this.clearBadBox, this);
 		dKey.onDown.add(this.clearOkBox, this);
+
+
 
 		// set background color
 		this.stage.backgroundColor = '#c0c0c0'
@@ -95,6 +108,35 @@ class Level extends Phaser.State {
 
 		this.okBoxGroup = this.game.add.group();
 		this.badBoxGroup = this.game.add.group();
+
+		//let trash = this.game.add.sprite(140, 40, 'trash');
+		//trash.scale.setTo(0.2, 0.2);
+		let style = { font: "32px Press Start 2P", align: "center", fill: "white" };
+		this.addStaticText(style);
+		this.trashCountText = this.game.add.text(270, 40, '0' , style)
+		this.itemsCountText = this.game.add.text(this.game.world._width - 75, 45, '', style)
+		this.trashCountText.anchor.set(0.5);
+		this.itemsCountText.anchor.set(0.5);
+		this.generateCurrentItemRequest();
+	}
+
+	addStaticText(style) {
+		let trashText = this.game.add.text(140, 40, 'TRASH    ITEMS:' , style)
+		trashText.anchor.set(0.5);
+	}
+
+	updateText() {
+		this.trashCountText.setText(this.badBoxGroup.length.toString());
+		let count = this.currentItem.count - this.okBoxGroup.length;
+		this.itemsCountText.setText('x  ' + count.toString());
+	}
+
+	updateCounter() {
+		if(this.missed > 0) {
+			this.missed--;
+		}
+		this.speed += 50;
+		this.level += 1
 	}
 
 	generateParticle() {
@@ -105,8 +147,19 @@ class Level extends Phaser.State {
 		this.particleGroup.add(item);
 	}
 
+	generateCurrentItemRequest() {
+		let goodItemIndex = this.getRandomNumber(this.goodItems.length);
+		let type = this.itemsMap[goodItemIndex];
+		let count = this.getRandomNumber(6, 1);
+		this.game.add.sprite(this.game.world._width - 150, 20, type);
+		this.currentItem = {
+			type: type,
+			count: count
+		};
+		this.updateText();
+	}
+
 	collision(obj1, obj2) {
-		console.log(obj2.type);
 		this.missed++;
 		this.particleGroup.remove(obj2);
 	}
@@ -116,15 +169,15 @@ class Level extends Phaser.State {
 		this.destGroup.add(obj);
 		obj.body.velocity.y = 0;
 		obj.body.velocity.x = this.direction * 80;
-
 		this.game.add.tween(obj).to( { angle: 45 }, 1000, Phaser.Easing.Linear.None, true, 250);
     	this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1000, Phaser.Easing.Linear.None, true, 250);
 	}
 
 	inOkBox(box, obj) {
 		this.flyGroup.remove(obj);
-		if(this.okBoxGroup.length >= 3) {
+		if(this.okBoxGroup.length >= this.currentItem.count && obj.type != this.currentItem.type) {
 			this.flewOverGroup.add(obj);
+			this.missed++;
 		} else {
 			obj.body.velocity.x = 0;
 			this.okBoxGroup.add(obj);
@@ -133,7 +186,7 @@ class Level extends Phaser.State {
 
 	inBadBox(box, obj) {
 		this.flyGroup.remove(obj);
-		if(this.badBoxGroup.length >= 3) {
+		if(this.badBoxGroup.length >= 4) {
 			this.flewOverGroup.add(obj);
 		} else {
 			obj.body.velocity.x = 0;
@@ -142,10 +195,10 @@ class Level extends Phaser.State {
 	}
 
 	update() {
-		this.time++;
-
+		//alert(this.timer.duration);
 		if (Phaser.Utils.chanceRoll(1)) {
 			this.generateParticle();
+			this.lastTime = this.timer;
 		}
 
 		this.game.physics.arcade.overlap(this.particleGroup, this.dumpBox, this.collision, null, this);
@@ -155,7 +208,7 @@ class Level extends Phaser.State {
 		// check if user missed to many items
 		if (this.missed >= this.availbleMisses) {
 			this.music.stop();
-			this.game.state.start('Intro');
+			this.game.state.start('Lose');
 		}
 
 		/*
@@ -168,7 +221,7 @@ class Level extends Phaser.State {
 	        rightStickY = this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_RIGHT_Y);
 	    }
 	    */
-		//button clicked
+		//button clicked 
 		if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) /*|| rightStickY || rightStickX*/) {
 			// check if match
 			let direction = 1;
@@ -180,6 +233,7 @@ class Level extends Phaser.State {
 				group: this.particleGroup,
 				destGroup: this.boxGroup
 			});
+	    	this.updateText();
 		}
 	}
 

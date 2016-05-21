@@ -11,7 +11,7 @@ class Intro extends Phaser.State {
 		// music
 		let music = this.add.audio('music', 0.5, true);
 		//music.play();
-		
+
 		// copyrights text
 		let style = { font: "26px Press Start 2P", align: "center", fill: "white" };
 		let text_value = 'TM   AND   ©     2016 \n \

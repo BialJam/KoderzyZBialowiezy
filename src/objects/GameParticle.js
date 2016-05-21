@@ -1,4 +1,8 @@
+
+
 class GameParticle extends Phaser.Sprite {
+	
+
 	constructor(game, x, y, key, frame) {
 		super(game, x, y, key, frame);
 		this.anchor.set(0.5);
