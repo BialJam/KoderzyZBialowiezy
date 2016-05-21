@@ -10,7 +10,8 @@ class Level extends Phaser.State {
 	preload() {
 
 		this.itemsMap = ['watermelon', 'apple', 'bread', 'junk'];
-		this.goodItems = [0,1,2];
+		this.badItems = ['watermelon', 'apple'];
+		this.goodItems = ['bread', 'junk'];
 
 		this.load.audio('music', 'assets/music.mp3');
 		this.load.image('trash', 'assets/trash-icon.png');
@@ -148,8 +149,8 @@ class Level extends Phaser.State {
 	}
 
 	generateCurrentItemRequest() {
-		let goodItemIndex = this.getRandomNumber(this.goodItems.length);
-		let type = this.itemsMap[goodItemIndex];
+		let rand = this.getRandomNumber(this.goodItems.length);
+		let type = this.goodItems[rand];
 		let count = this.getRandomNumber(6, 1);
 		this.game.add.sprite(this.game.world._width - 150, 20, type);
 		this.currentItem = {
@@ -176,7 +177,8 @@ class Level extends Phaser.State {
 
 	inOkBox(box, obj) {
 		this.flyGroup.remove(obj);
-		if(this.okBoxGroup.length >= this.currentItem.count) {
+		console.log(obj.key);
+		if(this.okBoxGroup.length >= this.currentItem.count || obj.key != this.currentItem.type) {
 			this.flewOverGroup.add(obj);
 			this.missed++;
 		} else {
@@ -189,7 +191,11 @@ class Level extends Phaser.State {
 		this.flyGroup.remove(obj);
 		if(this.badBoxGroup.length >= 4) {
 			this.flewOverGroup.add(obj);
-		} else {
+			this.missed++;
+		} else if (this.goodItems.indexOf(obj.key) > -1) {
+			this.missed++;
+		} 
+		else {
 			obj.body.velocity.x = 0;
 			this.badBoxGroup.add(obj);
 		}
