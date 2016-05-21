@@ -10,7 +10,7 @@ class Intro extends Phaser.State {
 		this.stage.backgroundColor = '#000'
 		// music
 		let music = this.add.audio('music', 0.5, true);
-		music.play();
+		//music.play();
 		
 		// copyrights text
 		let style = { font: "26px Press Start 2P", align: "center", fill: "white" };

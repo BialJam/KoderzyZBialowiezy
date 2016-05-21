@@ -29,7 +29,11 @@ class Level extends Phaser.State {
 	create() {
 		// music
 		this.music = this.add.audio('music', 0.5, true);
-		this.music.play();
+		//this.music.play();
+
+		// gamepad
+		this.game.input.gamepad.start();
+    	this.pad1 = this.game.input.gamepad.pad1;
 
 		// set background color
 		this.stage.backgroundColor = '#c0c0c0'
@@ -47,16 +51,19 @@ class Level extends Phaser.State {
 
 		this.particleGroup = this.game.add.group();
 		this.boxGroup = this.game.add.group();
+
 	}
 
 	generateParticle() {
 		let rand = this.getRandomNumber(this.itemsCount);
 		let type = this.itemsMap[rand];
 		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSize);
+		item.body.velocity.y = this.speed;
 		this.particleGroup.add(item);
 	}
 
 	collision(obj1, obj2) {
+		console.log(obj2.type);
 		this.missed++;
 		this.particleGroup.remove(obj2);
 	}
@@ -93,11 +100,21 @@ class Level extends Phaser.State {
 			this.game.state.start('Intro');
 		}
 
+
+		let rightStickX = false;
+		let rightStickY = false;
+		/*
+	    if (this.pad1.connected)
+	    {
+	        rightStickX = this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_RIGHT_X);
+	        rightStickY = this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_RIGHT_Y);
+	    }
+	    */
 		//button clicked
-		if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+		if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) /*|| rightStickY || rightStickX*/) {
 			// check if match
 			let direction = 1;
-			if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+			if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) /*|| rightStickY*/) {
 				direction = -1;
 			}
 			let gotBox = this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
