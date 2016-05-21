@@ -95,13 +95,13 @@ class Level extends Phaser.State {
 		aKey.onDown.add(this.clearBadBox, this);
 		dKey.onDown.add(this.clearOkBox, this);
 
-		this.dumpBox = new DumpSprite(this.game, this.game.world.centerX, this.game.world.centerY);
+		this.dumpBox = new DumpSprite(this.game, this.game.world.centerX, this.game.world._height + 100);
 		this.dumpBox.body.setSize(220, 10, -90, 0);
 
-		this.catchZone = new DumpSprite(this.game, this.game.world.centerX, this.game.world.centerY - 50);
+		this.catchZone = new DumpSprite(this.game, this.game.world.centerX, this.game.world._height - 100);
 
-		this.okBox = new DropBox(this.game, this.game.world.centerX + 100, this.game.world.centerY - 50);
-		this.badBox = new DropBox(this.game, this.game.world.centerX - 120, this.game.world.centerY - 50);
+		this.okBox = new DropBox(this.game, this.game.world.centerX + 200, this.game.world._height - 100);
+		this.badBox = new DropBox(this.game, this.game.world.centerX - 220, this.game.world._height - 100);
 
 		this.particleGroup = this.game.add.group();
 		this.flyGroup = this.game.add.group();
