@@ -14,7 +14,7 @@ class Intro extends Phaser.State {
 		
 		// copyrights text
 		let style = { font: "26px Press Start 2P", align: "center", fill: "white" };
-		let text_value = 'M   AND   ©     2016 \n \
+		let text_value = 'TM   AND   ©     2016 \n \
 				KODERZY    Z     BIALOWIEZY    CO    LTD \n \
 				LICENSED    BY\n NINTENDO    OF     AMERICA     INC'
 		let text = this.game.add.text(this.game.world.centerX, this.game.world.centerY + 200, text_value , style)

@@ -28,7 +28,7 @@ class Level extends Phaser.State {
 		// items
 		this.items = []
 		for(let i = 0; i < 10; i++) {
-			let item = this.add.sprite(this.game.world.centerX - this.itemSize, -this.itemSize, 'item' + this.getRandomNumber(this.itemsCount, 1).toString());
+			let item = this.add.sprite(this.game.world.centerX, -this.itemSize, 'item' + this.getRandomNumber(this.itemsCount, 1).toString());
 			item.anchor.set(0.5);
 			this.physics.enable(item, Phaser.Physics.ARCADE);
 			item.body.velocity.y = 0;
