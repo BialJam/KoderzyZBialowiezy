@@ -21,7 +21,7 @@ class Level extends Phaser.State {
 			this.load.image(name, 'assets/item' + i.toString() + '.jpg');
 		}
 		this.itemSize = 40;
-		this.speed = 200;
+		this.speed = 50;
 		this.time = 0
 		this.border = this.game.world._height - 40;
 		this.missed = 0;
