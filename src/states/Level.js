@@ -24,7 +24,7 @@ class Level extends Phaser.State {
 			var name = this.itemsMap[item];
 			this.load.image(name, 'assets/' + name + '.png');
 		}
-		this.itemSize = 40;
+		this.itemSize = 100;
 		this.speed = 50;
 		this.time = 0
 		this.border = this.game.world._height - 40;
@@ -35,6 +35,8 @@ class Level extends Phaser.State {
 	}
 
 	create() {
+		this.game.input.gamepad.start();
+		this.pad = this.game.input.gamepad.pad1;
 		// sprites
 		this.game.add.sprite(0, 0, 'background');
 		this.game.add.sprite(this.game.world.centerX-70, 0, 'line');
@@ -55,13 +57,22 @@ class Level extends Phaser.State {
 		let rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
 		let aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
-		let dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+		let dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);	
+
+		this.pad.addCallbacks(this, { onConnect: function () {
+			let rect = this.pad.getButton(Phaser.Gamepad.XBOX360_X);
+    		let circ = this.pad.getButton(Phaser.Gamepad.XBOX360_B);
+			rect.onDown.add(this.clearBadBox, this);
+    		circ.onDown.add(this.clearOkBox, this);
+		} });
+
 
 		leftKey.onDown.add(this.catchLeft, this);
 		rightKey.onDown.add(this.catchRight, this);
 
 		aKey.onDown.add(this.clearBadBox, this);
 		dKey.onDown.add(this.clearOkBox, this);
+
 
 		// collisions
 		this.dumpBox = new DumpSprite(this.game, this.game.world.centerX, this.game.world._height + 100);
@@ -147,19 +158,23 @@ class Level extends Phaser.State {
 	generateParticle() {
 		let rand = this.getRandomNumber(this.itemsCount);
 		let type = this.itemsMap[rand];
-		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSizem, type);
+		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSize, type);
 		item.body.velocity.y = this.speed;
 		this.particleGroup.add(item);
 	}
 
 	generateCurrentItemRequest() {
+		if (this.currentItem) {
+			this.currentItem.item.destroy();
+		}
+		
 		let rand = this.getRandomNumber(this.goodItems.length);
 		let type = this.goodItems[rand];
 		let count = this.getRandomNumber(6, 1);
-		this.game.add.sprite(this.game.world._width - 150, 20, type);
 		this.currentItem = {
 			type: type,
-			count: count
+			count: count,
+			item: this.game.add.sprite(this.game.world._width - 150, 20, type)
 		};
 		this.updateText();
 	}
