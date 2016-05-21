@@ -49,8 +49,7 @@ class Level extends Phaser.State {
 
 	collision(obj1, obj2) {
 		this.missed++;
-		obj2.kill();
-		// obj1.destroy();
+		this.particleGroup.remove(obj2);
 	}
 
 	update() {
