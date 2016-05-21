@@ -34,7 +34,8 @@ class Level extends Phaser.State {
 			direction: -1,
 			group: this.particleGroup,
 			destGroup: this.flyGroup,
-			game: this.game
+			game: this.game,
+			this: this,
 		});
 	}
 
@@ -43,7 +44,8 @@ class Level extends Phaser.State {
 			direction: 1,
 			group: this.particleGroup,
 			destGroup: this.flyGroup,
-			game: this.game
+			game: this.game,
+			this: this,
 		});
 	}
 
@@ -169,11 +171,12 @@ class Level extends Phaser.State {
 		obj.body.velocity.x = this.direction * 80;
 		this.game.add.tween(obj).to( { angle: 45 }, 1000, Phaser.Easing.Linear.None, true, 250);
     	this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1000, Phaser.Easing.Linear.None, true, 250);
+		this.this.updateText();
 	}
 
 	inOkBox(box, obj) {
 		this.flyGroup.remove(obj);
-		if(this.okBoxGroup.length >= this.currentItem.count && obj.type != this.currentItem.type) {
+		if(this.okBoxGroup.length >= this.currentItem.count) {
 			this.flewOverGroup.add(obj);
 			this.missed++;
 		} else {
