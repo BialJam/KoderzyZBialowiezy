@@ -30,7 +30,7 @@ class Level extends Phaser.State {
 		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
 			direction: -1,
 			group: this.particleGroup,
-			destGroup: this.boxGroup,
+			destGroup: this.flyGroup,
 			game: this.game
 		});
 	}
@@ -39,9 +39,17 @@ class Level extends Phaser.State {
 		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
 			direction: 1,
 			group: this.particleGroup,
-			destGroup: this.boxGroup,
+			destGroup: this.flyGroup,
 			game: this.game
 		});
+	}
+
+	clearOkBox() {
+		this.okBoxGroup.removeAll()
+	}
+
+	clearBadBox() {
+		this.badBoxGroup.removeAll()
 	}
 
 	create() {
@@ -58,8 +66,14 @@ class Level extends Phaser.State {
 		let leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 		let rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
+		let aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+		let dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+
 		leftKey.onDown.add(this.catchLeft, this);
 		rightKey.onDown.add(this.catchRight, this);
+
+		aKey.onDown.add(this.clearBadBox, this);
+		dKey.onDown.add(this.clearOkBox, this);
 
 		// set background color
 		this.stage.backgroundColor = '#c0c0c0'
@@ -76,8 +90,11 @@ class Level extends Phaser.State {
 		this.badBox.body.setSize(10, 100, 0, -40);
 
 		this.particleGroup = this.game.add.group();
-		this.boxGroup = this.game.add.group();
+		this.flyGroup = this.game.add.group();
+		this.flewOverGroup = this.game.add.group();
 
+		this.okBoxGroup = this.game.add.group();
+		this.badBoxGroup = this.game.add.group();
 	}
 
 	generateParticle() {
@@ -105,11 +122,23 @@ class Level extends Phaser.State {
 	}
 
 	inOkBox(box, obj) {
-		obj.body.velocity.x = 0;
+		this.flyGroup.remove(obj);
+		if(this.okBoxGroup.length >= 3) {
+			this.flewOverGroup.add(obj);
+		} else {
+			obj.body.velocity.x = 0;
+			this.okBoxGroup.add(obj);
+		}
 	}
 
 	inBadBox(box, obj) {
-		obj.body.velocity.x = 0;	
+		this.flyGroup.remove(obj);
+		if(this.badBoxGroup.length >= 3) {
+			this.flewOverGroup.add(obj);
+		} else {
+			obj.body.velocity.x = 0;
+			this.badBoxGroup.add(obj);
+		}
 	}
 
 	update() {
@@ -120,8 +149,8 @@ class Level extends Phaser.State {
 		}
 
 		this.game.physics.arcade.overlap(this.particleGroup, this.dumpBox, this.collision, null, this);
-		this.game.physics.arcade.overlap(this.boxGroup, this.okBox, this.inOkBox, null, this);
-		this.game.physics.arcade.overlap(this.boxGroup, this.badBox, this.inBadBox, null, this);
+		this.game.physics.arcade.overlap(this.flyGroup, this.okBox, this.inOkBox, null, this);
+		this.game.physics.arcade.overlap(this.flyGroup, this.badBox, this.inBadBox, null, this);
 
 		// check if user missed to many items
 		if (this.missed >= this.availbleMisses) {
