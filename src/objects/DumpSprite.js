@@ -3,7 +3,6 @@ class DumpParticle extends Phaser.Sprite {
 		super(game, x, y);
 		this.game.physics.enable(this, Phaser.Physics.ARCADE);
 		this.body.immovable = true;
-		this.body.setSize(220, 10, -90, 0);
 		this.anchor.set(0.5);
 
 		game.add.existing(this); 
