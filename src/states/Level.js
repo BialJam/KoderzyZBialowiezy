@@ -30,7 +30,8 @@ class Level extends Phaser.State {
 		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
 			direction: -1,
 			group: this.particleGroup,
-			destGroup: this.boxGroup
+			destGroup: this.boxGroup,
+			game: this.game
 		});
 	}
 
@@ -38,7 +39,8 @@ class Level extends Phaser.State {
 		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
 			direction: 1,
 			group: this.particleGroup,
-			destGroup: this.boxGroup
+			destGroup: this.boxGroup,
+			game: this.game
 		});
 	}
 
@@ -74,7 +76,7 @@ class Level extends Phaser.State {
 	generateParticle() {
 		let rand = this.getRandomNumber(this.itemsCount);
 		let type = this.itemsMap[rand];
-		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSize);
+		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSize, type);
 		this.particleGroup.add(item);
 	}
 
@@ -88,6 +90,9 @@ class Level extends Phaser.State {
 		this.destGroup.add(obj);
 		obj.body.velocity.y = 0;
 		obj.body.velocity.x = this.direction * 80;
+
+		this.game.add.tween(obj).to( { angle: 45 }, 1000, Phaser.Easing.Linear.None, true, 250);
+    	this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1000, Phaser.Easing.Linear.None, true, 250);
 	}
 
 	inOkBox(box, obj) {
