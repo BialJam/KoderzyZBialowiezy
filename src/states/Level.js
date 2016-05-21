@@ -86,8 +86,6 @@ class Level extends Phaser.State {
 		aKey.onDown.add(this.clearBadBox, this);
 		dKey.onDown.add(this.clearOkBox, this);
 
-
-
 		// set background color
 		this.stage.backgroundColor = '#c0c0c0'
 
@@ -222,19 +220,6 @@ class Level extends Phaser.State {
 	    }
 	    */
 		//button clicked 
-		if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) /*|| rightStickY || rightStickX*/) {
-			// check if match
-			let direction = 1;
-			if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) /*|| rightStickY*/) {
-				direction = -1;
-			}
-			let gotBox = this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
-				direction: direction,
-				group: this.particleGroup,
-				destGroup: this.boxGroup
-			});
-	    	this.updateText();
-		}
 	}
 
 	getRandomNumber(size, start=0) {
