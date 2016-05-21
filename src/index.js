@@ -8,7 +8,7 @@ class Game extends Phaser.Game {
 		super(1280, 720, Phaser.AUTO, 'content', null);
 		this.state.add('Level', Level, false);
 		this.state.add('Intro', Intro, false);
-		this.state.start('Intro');
+		this.state.start('Level');
 	}
 }
 
