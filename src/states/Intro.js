@@ -23,7 +23,7 @@ class Intro extends Phaser.State {
 		let logo = this.add.sprite(this.game.world.centerX, -200, 'logo');
 		logo.anchor.set(0.5);
 		logo.enableUpdate = true;
-		let animation = this.add.tween(logo).to( { y: this.game.world.centerY-(logo.height/2) }, 5000, "Quart.easeOut");
+		let animation = this.add.tween(logo).to( { y: this.game.world.centerY-(logo.height/2) }, 7000, "Quart.easeOut");
 		animation.start();
 	}
 
