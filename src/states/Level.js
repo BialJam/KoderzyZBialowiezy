@@ -19,8 +19,8 @@ class Level extends Phaser.State {
 
 	create() {
 		// music
-		let music = this.add.audio('music', 0.5, true);
-		//music.play();
+		this.music = this.add.audio('music', 0.5, true);
+		this.music.play();
 
 		// set background color
 		this.stage.backgroundColor = '#c0c0c0'
@@ -51,7 +51,8 @@ class Level extends Phaser.State {
 
 		// check if user missed to many items
 		if (this.missed >= this.availbleMisses) {
-			// end game
+			this.music.stop();
+			this.game.state.start('Intro');
 		}
 
 		//button clicked
@@ -85,7 +86,6 @@ class Level extends Phaser.State {
 	}
 
 	stopItem(itemIndex) {
-		console.log(itemIndex);
 		this.items[itemIndex].body.velocity.y = 0;
 		this.items[itemIndex].y = -this.itemSize;
 	}

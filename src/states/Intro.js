@@ -7,10 +7,11 @@ class Intro extends Phaser.State {
 	}
 
 	create() {
+		this.stage.backgroundColor = '#000'
 		// music
 		let music = this.add.audio('music', 0.5, true);
 		music.play();
-
+		
 		// copyrights text
 		let style = { font: "26px Press Start 2P", align: "center", fill: "white" };
 		let text_value = 'M   AND   ©     2016 \n \
@@ -25,6 +26,11 @@ class Intro extends Phaser.State {
 		logo.enableUpdate = true;
 		let animation = this.add.tween(logo).to( { y: this.game.world.centerY-(logo.height/2) }, 7000, "Quart.easeOut");
 		animation.start();
+		animation.killOnComplete = true;
+		animation.onComplete.add(function() {
+	  		this.game.state.start('Level');
+	  		music.stop();
+		}, logo);
 	}
 
 }
