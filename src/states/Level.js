@@ -32,9 +32,11 @@ class Level extends Phaser.State {
 		this.availbleMisses = 6;
 		this.lastTime = 0;
 		this.level = 0;
+		
 	}
 
 	create() {
+		this.itemsToNextLevel = 30;
 		this.game.input.gamepad.start();
 		this.pad = this.game.input.gamepad.pad1;
 		// sprites
@@ -46,11 +48,6 @@ class Level extends Phaser.State {
 		// music
 		this.music = this.add.audio('music', 0.5, true);
 		// this.music.play();
-
-		// timer (levels increase)
-		this.timer = this.game.time.create(false);
-		this.timer.loop(20000, this.updateCounter, this);
-		this.timer.start();
 
 		// keys
 		let leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -108,7 +105,7 @@ class Level extends Phaser.State {
 	update() {
 		// item generator
 		this.timerCounter += this.game.time.elapsed;
-		if (this.timerCounter > 1000) {
+		if (this.timerCounter > 1000 && this.itemsToNextLevel > 0) {
 			this.timerCounter = 0;
 			if (Phaser.Utils.chanceRoll(30)) {
 				this.generateParticle();
@@ -149,9 +146,10 @@ class Level extends Phaser.State {
 		if(this.missed > 0) {
 			this.missed--;
 		}
-		this.speed += 50;
+		this.speed += 30;
 		this.level += 1
 		this.levelText.setText(this.level);
+		this.itemsToNextLevel = 30;
 	}
 
 
@@ -163,6 +161,7 @@ class Level extends Phaser.State {
 		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSize, type);
 		item.body.velocity.y = this.speed;
 		this.particleGroup.add(item);
+		this.itemsToNextLevel--;
 	}
 
 	generateCurrentItemRequest() {
@@ -196,6 +195,13 @@ class Level extends Phaser.State {
 			this.missed++;
 		}
 		this.particleGroup.remove(obj2);
+		this.checkNextLevel();
+	}
+
+	checkNextLevel() {
+		if(this.particleGroup.length == 0 && this.itemsToNextLevel <= 0) {
+			this.updateCounter();
+		}
 	}
 
 	caught(catchZone, obj) {
@@ -205,6 +211,7 @@ class Level extends Phaser.State {
 		obj.body.velocity.x = this.direction * 300;
 		this.game.add.tween(obj).to( { angle: 90 }, 1500, Phaser.Easing.Linear.None, true, 500);
     	this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1500, Phaser.Easing.Linear.None, true, 500);
+    	this.this.checkNextLevel();
 	}
 
 	inOkBox(box, obj) {
