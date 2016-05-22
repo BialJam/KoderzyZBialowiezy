@@ -2,14 +2,14 @@
 class Lose extends Phaser.State {
 
 	preload() {
-		this.load.audio('music', 'assets/music.mp3');
+		this.load.audio('music', 'assets/game_over.mp3');
 	}
 
 	create() {
 		this.stage.backgroundColor = '#000'
 		// music
-		this.music = this.add.audio('music', 0.5, true);
-		//music.play();
+		this.music = this.add.audio('music', 0.3, true);
+		this.music.play();
 		
 		// text
 		let style = { font: "70px Press Start 2P", align: "center", fill: "white" };

@@ -137,7 +137,7 @@ class Level extends Phaser.State {
 		// check if user missed to many items
 		if (this.missed >= this.availbleMisses) {
 			this.music.stop();
-			this.game.state.start('Level');
+			this.game.state.start('Lose');
 		}
 	}
 
@@ -158,6 +158,7 @@ class Level extends Phaser.State {
 	updateCounter() {
 		this.levelSound.play();
 		if(this.level == 2) {
+			this.music.stop();
 			this.game.state.start('Win');
 		}
 		if(this.missed > 0) {
