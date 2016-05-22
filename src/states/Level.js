@@ -19,6 +19,12 @@ class Level extends Phaser.State {
 		this.load.image('line', 'assets/line.png');
 		this.load.image('trash', 'assets/trash.png');
 		this.load.image('box', 'assets/box.png');
+
+		this.load.audio('point', 'assets/Collect_Point_00.mp3');
+		this.load.audio('craft', 'assets/Craft_00.mp3');
+		this.load.audio('death', 'assets/Hero_Death_00.mp3');
+		this.load.audio('level', 'assets/Jingle_Achievement_00.mp3');
+
 		this.itemsCount = this.itemsMap.length;
 		for(var item in this.itemsMap) {
 			var name = this.itemsMap[item];
@@ -100,6 +106,11 @@ class Level extends Phaser.State {
 		// timers
 		this.lastTime = this.game.time.now;
 		this.timerCounter = 0;
+
+		this.pointSound = this.add.audio('point');
+		this.craftSound = this.add.audio('craft');
+		this.deathSound = this.add.audio('death');
+		this.levelSound = this.add.audio('level');
 	}
 
 	update() {
@@ -143,6 +154,10 @@ class Level extends Phaser.State {
 	}
 
 	updateCounter() {
+		this.levelSound.play();
+		if(this.level == 2) {
+			this.game.state.start('Win');
+		}
 		if(this.missed > 0) {
 			this.missed--;
 		}
@@ -210,7 +225,6 @@ class Level extends Phaser.State {
 		obj.body.velocity.y = 0;
 		obj.body.velocity.x = this.direction * 300;
 		this.game.add.tween(obj).to( { angle: 90 }, 1500, Phaser.Easing.Linear.None, true, 500);
-    	this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1500, Phaser.Easing.Linear.None, true, 500);
     	this.this.checkNextLevel();
 	}
 
@@ -218,10 +232,13 @@ class Level extends Phaser.State {
 		this.flyGroup.remove(obj);
 		if(this.okBox.group.length >= this.currentItem.count || obj.key != this.currentItem.type) {
 			this.flewOverGroup.add(obj);
+			this.deathSound.play();
 			this.missed++;
 		} else {
 			obj.body.velocity.x = 0;
 			this.okBox.addC(obj);
+			this.pointSound.play();
+			this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1500, Phaser.Easing.Linear.None, true);
 		}
 		this.updateText();
 	}
@@ -230,11 +247,14 @@ class Level extends Phaser.State {
 		this.flyGroup.remove(obj);
 		if(this.badBox.group.length >= 4) {
 			this.flewOverGroup.add(obj);
+			this.deathSound.play();
 			this.missed++;
 		}
 		else {
 			obj.body.velocity.x = 0;
 			this.badBox.addC(obj);
+			this.craftSound.play();
+			this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1500, Phaser.Easing.Linear.None, true);
 			if (this.goodItems.indexOf(obj.key) > -1) {
 				this.missed++;
 			}
@@ -246,23 +266,29 @@ class Level extends Phaser.State {
 	// keys actions
 
 	catchLeft() {
-		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
+		let ret = this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
 			direction: -1,
 			group: this.particleGroup,
 			destGroup: this.flyGroup,
 			game: this.game,
 			this: this,
 		});
+		if (!ret) {
+			// this.craftSound.play();
+		}
 	}
 
 	catchRight() {
-		this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
+		let ret = this.game.physics.arcade.overlap(this.particleGroup, this.catchZone, this.caught, null, {
 			direction: 1,
 			group: this.particleGroup,
 			destGroup: this.flyGroup,
 			game: this.game,
 			this: this,
 		});
+		if (!ret) {
+			// this.craftSound.play();
+		}
 	}
 
 	clearOkBox() {
