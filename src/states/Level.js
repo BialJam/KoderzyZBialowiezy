@@ -50,7 +50,7 @@ class Level extends Phaser.State {
 		// timer (levels increase)
 		this.timer = this.game.time.create(false);
 		this.timer.loop(20000, this.updateCounter, this);
-		// this.timer.start();
+		this.timer.start();
 
 		// keys
 		let leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -93,25 +93,26 @@ class Level extends Phaser.State {
 		// items counter and texts
 		let style = { font: "32px Press Start 2P", align: "center", fill: "white" };
 		this.addStaticText(style);
-		this.trashCountText = this.game.add.text(270, 40, '0' , style)
-		this.itemsCountText = this.game.add.text(this.game.world._width - 75, 45, '', style)
+		this.trashCountText = this.game.add.text(this.game.world._width - 170, 40, '0' , style)
+		this.itemsCountText = this.game.add.text(this.game.world._width - 45, 40, '', style)
+		this.levelText = this.game.add.text(this.game.world.centerX - 185, 20, '0', style)
 		this.trashCountText.anchor.set(0.5);
 		this.itemsCountText.anchor.set(0.5);
 		this.generateCurrentItemRequest();
 
 		// timers
 		this.lastTime = this.game.time.now;
-		this.timer = 0;
+		this.timerCounter = 0;
 	}
 
 	update() {
 		// item generator
-		this.timer += this.game.time.elapsed;
-		if (this.timer > 1000) {
-			this.timer = 0;
+		this.timerCounter += this.game.time.elapsed;
+		if (this.timerCounter > 1000) {
+			this.timerCounter = 0;
 			if (Phaser.Utils.chanceRoll(30)) {
 				this.generateParticle();
-				this.lastTime = this.timer;
+				this.lastTime = this.timerCounter;
 			}
 		}
 
@@ -132,7 +133,9 @@ class Level extends Phaser.State {
 	// texts and state update functions  
 
 	addStaticText(style) {
-		let trashText = this.game.add.text(140, 40, 'TRASH    ITEMS:' , style)
+		let trashText = this.game.add.text(this.game.world._width - 290, 40, 'TRASH    ITEMS:' , style)
+		trashText.anchor.set(0.5);
+		let levelText = this.game.add.text(this.game.world.centerX - 290, 20, 'LEVEL:' , style)
 		trashText.anchor.set(0.5);
 	}
 
@@ -148,6 +151,7 @@ class Level extends Phaser.State {
 		}
 		this.speed += 50;
 		this.level += 1
+		this.levelText.setText(this.level);
 	}
 
 
@@ -173,8 +177,9 @@ class Level extends Phaser.State {
 		this.currentItem = {
 			type: type,
 			count: count,
-			item: this.game.add.sprite(this.game.world._width - 150, 20, type)
+			item: this.game.add.sprite(this.game.world._width - 140, 10, type)
 		};
+		this.currentItem.item.scale.setTo(0.6,0.6);
 		this.updateText();
 	}
 
