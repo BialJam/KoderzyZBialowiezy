@@ -54,6 +54,8 @@ class DropBox extends Phaser.Sprite {
 	    	let width = this.group.length * (this.totalLife / this.capacity);
 	    	if (width == 0)
 	    		width += 5;
+	    	if (!this.game)
+	    		return;
 	      	this.game.add.tween(this.widthLife).to( { width: width }, 200, Phaser.Easing.Linear.None, true);
 	    }
 	}

@@ -43,7 +43,7 @@ class Boss extends Phaser.Sprite {
 		this.angryLevel[this.angryIndex++].tint = 0xFF0000;
 	}
 
-	dicreaseAngryLevel () {
+	decreaseAngryLevel () {
 		this.angryLevel[this.angryIndex--].tint = 0xC0C0C0;
 	}
 } 

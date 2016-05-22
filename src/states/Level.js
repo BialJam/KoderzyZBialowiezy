@@ -64,12 +64,7 @@ class Level extends Phaser.State {
 		let aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
 		let dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);	
 
-		this.pad.addCallbacks(this, { onConnect: function () {
-			let rect = this.pad.getButton(Phaser.Gamepad.XBOX360_LEFT_TRIGGER);
-    		let circ = this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER);
-			rect.onDown.add(this.clearBadBox, this);
-    		circ.onDown.add(this.clearOkBox, this);
-		} });
+		this.addPadConnection();
 
 		leftKey.onDown.add(this.catchLeft, this);
 		rightKey.onDown.add(this.catchRight, this);
@@ -112,6 +107,18 @@ class Level extends Phaser.State {
 		this.moveSound = this.add.audio('move');
 		this.wrongMoveSound = this.add.audio('wrong_move');
 
+	}
+
+	addPadConnection() {
+		let rect = this.pad.getButton(Phaser.Gamepad.XBOX360_LEFT_TRIGGER);
+		let circ = this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER);
+
+		if (!rect || !circ) {
+			return;
+		}
+
+		rect.onDown.add(this.clearBadBox, this);
+		circ.onDown.add(this.clearOkBox, this);
 	}
 
 	update() {
@@ -175,7 +182,7 @@ class Level extends Phaser.State {
 		}
 		if(this.missed > 0) {
 			this.missed--;
-			this.boss.dicreaseAngryLevel();
+			this.boss.decreaseAngryLevel();
 		}
 		this.speed += 50;
 		this.level += 1
