@@ -14,6 +14,8 @@ class DropBox extends Phaser.Sprite {
 		game.add.existing(this); 
 		this.group = game.add.group();
 
+		this.onBoxClear = new Phaser.Signal();
+
 		this.createTweens();
 	}
 
@@ -32,15 +34,14 @@ class DropBox extends Phaser.Sprite {
 		let tweenC = this.game.add.tween(this).to({y: spriteY}, 300, Phaser.Easing.Quadratic.InOut);
 		this.moveGroupOutsideTween = this.game.add.tween(this.group).to({y: groupY + 400}, 300, Phaser.Easing.Quadratic.InOut);
 		let tweenD = this.game.add.tween(this.group).to({y: groupY}, 300, Phaser.Easing.Quadratic.InOut);
-
 		this.moveOutsideTween.chain(tweenC);
 		this.moveGroupOutsideTween.chain(tweenD);
-
 		this.moveGroupOutsideTween.onComplete.add(this.onTweenComplete, this);
 	}
 
 	onTweenComplete() {
 		this.group.removeAll();
+		this.onBoxClear.dispatch(this);
 	}
 
 	clearBox() {

@@ -83,6 +83,9 @@ class Level extends Phaser.State {
 		this.okBox = new DropBox(this.game, this.game.world.centerX + 200, this.game.world._height - 100, 'box');
 		this.badBox = new DropBox(this.game, this.game.world.centerX - 220, this.game.world._height - 100, 'trash');
 
+		this.okBox.onBoxClear.add(this.updateText, this);
+		this.badBox.onBoxClear.add(this.updateText, this);
+
 		this.particleGroup = this.game.add.group();
 		this.flyGroup = this.game.add.group();
 		this.flewOverGroup = this.game.add.group();
