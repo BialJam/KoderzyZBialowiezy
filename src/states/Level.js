@@ -169,6 +169,7 @@ class Level extends Phaser.State {
 		let rand = this.getRandomNumber(this.goodItems.length);
 		let type = this.goodItems[rand];
 		let count = this.getRandomNumber(6, 1);
+		this.okBox.updateCapacity(count);
 		this.currentItem = {
 			type: type,
 			count: count,
