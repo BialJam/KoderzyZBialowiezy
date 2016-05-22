@@ -9,7 +9,7 @@ class GameParticle extends Phaser.Sprite {
 		game.physics.enable(this, Phaser.Physics.ARCADE);
 	    this.collideWorldBounds = true;
 	    this.enableBody = true;
-	    this.body.velocity.y = 60;
+	    this.body.velocity.y = 100;
 		game.add.existing(this); 
 	}
 

@@ -25,7 +25,7 @@ class Level extends Phaser.State {
 			this.load.image(name, 'assets/' + name + '.png');
 		}
 		this.itemSize = 100;
-		this.speed = 50;
+		this.speed = 100;
 		this.time = 0
 		this.border = this.game.world._height - 40;
 		this.missed = 0;
@@ -198,10 +198,9 @@ class Level extends Phaser.State {
 		this.group.remove(obj);
 		this.destGroup.add(obj);
 		obj.body.velocity.y = 0;
-		obj.body.velocity.x = this.direction * 80;
-		this.game.add.tween(obj).to( { angle: 45 }, 1000, Phaser.Easing.Linear.None, true, 250);
-    	this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1000, Phaser.Easing.Linear.None, true, 250);
-		this.this.updateText();
+		obj.body.velocity.x = this.direction * 100;
+		this.game.add.tween(obj).to( { angle: 90 }, 1500, Phaser.Easing.Linear.None, true, 500);
+    	this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1500, Phaser.Easing.Linear.None, true, 500);
 	}
 
 	inOkBox(box, obj) {
@@ -213,6 +212,7 @@ class Level extends Phaser.State {
 			obj.body.velocity.x = 0;
 			this.okBoxGroup.add(obj);
 		}
+		this.updateText();
 	}
 
 	inBadBox(box, obj) {
@@ -228,6 +228,7 @@ class Level extends Phaser.State {
 				this.missed++;
 			}
 		}
+		this.updateText();
 	}
 
 
