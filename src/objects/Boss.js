@@ -17,17 +17,20 @@ class Boss extends Phaser.Sprite {
 		this.graphics.drawRect(this.game.world._width - 220, 2, 200, 111);
 
 		let style2 = { font: "27px Press Start 2P", align: "center", fill: "white" };
-		let angrytext = this.game.add.text(213, 45, 'ANGRY    LEVEL:', style2);
+		let angrytext = this.game.add.text(216, 45, 'ANGRY    LEVEL:', style2);
 		angrytext.anchor.set(0.5);
 		let boss = this.game.add.sprite(11, 15, 'boss').scale.set(0.4, 0.4);
 		this.graphics.endFill();
-		this.graphics.lineStyle(10, 0xC0C0C0, 1);
-		this.graphics.beginFill(0xC0C0C0, 0);
+
 		this.angryLevel =  []
-		let start = 125;
-		for (let i = 0; i < 7; i++) {
-			let x = start + (i*25);
-			this.angryLevel[i] = this.graphics.drawRect(x, 55, 8, 20);
+
+		let start = 128;
+		for (let i = 0; i < 6; i++) {
+			let x = start + (i*30);
+			let graphics_single = this.game.add.graphics(8, 8);
+			graphics_single.lineStyle(10, 0xC0C0C0, 1);
+			graphics_single.beginFill(0xC0C0C0, 0);
+			this.angryLevel[i] = graphics_single.drawRect(x, 55, 10, 20);
 		}
 		this.angryIndex = 0;
 	}
@@ -37,11 +40,11 @@ class Boss extends Phaser.Sprite {
 	}
 
 	increaseAngryLevel () {
-		this.angryLevel[this.angryIndex++].graphic.graphicData[0].fillColor = 0xFF700B;
+		this.angryLevel[this.angryIndex++].tint = 0xFF0000;
 	}
 
 	dicreaseAngryLevel () {
-		this.angryLevel[this.angryIndex--].fillColor = 0xC0C0C0;
+		this.angryLevel[this.angryIndex--].tint = 0xC0C0C0;
 	}
 } 
 

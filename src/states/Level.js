@@ -15,7 +15,7 @@ class Level extends Phaser.State {
 		this.badItems = ['shit', 'used_condom', 'bomb', 'glock', 'brick'];
 		this.goodItems = ['water_melon', 'banana', 'cola', 'durex', 'oreo', 'snickers'];
 
-		this.load.audio('music', 'assets/music.mp3');
+		this.load.audio('music', 'assets/soundtrack_music.mp3');
 		this.load.image('background', 'assets/background.png');
 		this.load.image('line', 'assets/line.png');
 		this.load.image('trash', 'assets/trash.png');
@@ -54,8 +54,8 @@ class Level extends Phaser.State {
 		// this.game.add.sprite(this.game.world.centerX-280, this.game.world._height - 190, 'trash');
 		
 		// music
-		this.music = this.add.audio('music', 0.5, true);
-		// this.music.play();
+		this.music = this.add.audio('music', 0.2, true);
+		this.music.play();
 
 		// keys
 		let leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
