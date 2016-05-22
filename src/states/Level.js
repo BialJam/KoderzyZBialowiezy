@@ -134,8 +134,8 @@ class Level extends Phaser.State {
 	}
 
 	updateText() {
-		this.trashCountText.setText(this.badBox.children.length.toString());
-		let count = this.currentItem.count - this.badBox.children.length;
+		this.trashCountText.setText(this.badBox.group.length.toString());
+		let count = this.currentItem.count - this.badBox.group.length;
 		this.itemsCountText.setText('x  ' + count.toString());
 	}
 
@@ -200,7 +200,7 @@ class Level extends Phaser.State {
 
 	inOkBox(box, obj) {
 		this.flyGroup.remove(obj);
-		if(this.okBox.children.length >= this.currentItem.count || obj.key != this.currentItem.type) {
+		if(this.okBox.group.length >= this.currentItem.count || obj.key != this.currentItem.type) {
 			this.flewOverGroup.add(obj);
 			this.missed++;
 		} else {
@@ -212,7 +212,7 @@ class Level extends Phaser.State {
 
 	inBadBox(box, obj) {
 		this.flyGroup.remove(obj);
-		if(this.badBox.children.length >= 4) {
+		if(this.badBox.group.length >= 4) {
 			this.flewOverGroup.add(obj);
 			this.missed++;
 		}
