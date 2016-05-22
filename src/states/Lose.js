@@ -27,7 +27,8 @@ class Lose extends Phaser.State {
     	let pad = this.game.input.gamepad.pad1;
 		let buttonX = pad.getButton(Phaser.Gamepad.XBOX360_A);
 		space.onDown.add(this.end, this);
-		buttonX.onDown.add(this.end, this);
+		if(buttonX)
+			buttonX.onDown.add(this.end, this);
 
 		this.worker = new Worker(this.game, this.game.world.centerX, this.game.world.centerY, 'character');
 		let tween = this.game.add.tween(this.worker).to({ x: this.game.world.width + 20 }, 2500, Phaser.Linear, true, 200);
