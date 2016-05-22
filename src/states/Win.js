@@ -8,8 +8,8 @@ class Win extends Phaser.State {
 	create() {
 		this.stage.backgroundColor = '#000'
 		// music
-		this.music = this.add.audio('music', 0.5, true);
-		//music.play();
+		this.music = this.add.audio('music', 0.3, true);
+		this.music.play();
 		
 		// text
 		let style = { font: "70px Press Start 2P", align: "center", fill: "white" };
@@ -23,8 +23,9 @@ class Win extends Phaser.State {
 		this.game.input.gamepad.start();
 
     	let pad = this.game.input.gamepad.pad1;
-		let buttonX = buttonX = pad.getButton(Phaser.Gamepad.XBOX360_X);
+		let buttonX = pad.getButton(Phaser.Gamepad.XBOX360_A);
 		space.onDown.add(this.end, this);
+		buttonX.onDown.add(this.end, this);
 	}
 
 	end () {

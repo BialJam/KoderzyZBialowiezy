@@ -16,10 +16,10 @@ class Level extends Phaser.State {
 		this.goodItems = ['water_melon', 'banana', 'cola', 'durex', 'oreo', 'snickers'];
 
 		this.load.audio('music', 'assets/soundtrack_music.mp3');
-		this.load.image('background', 'assets/background.png');
-		this.load.image('line', 'assets/line.png');
-		this.load.image('trash', 'assets/trash.png');
-		this.load.image('box', 'assets/box.png');
+		this.load.image('background', 'assets_8bit/background.png');
+		this.load.image('line', 'assets_8bit/line.png');
+		this.load.image('trash', 'assets_8bit/trash.png');
+		this.load.image('box', 'assets_8bit/box.png');
 		this.load.image('boss', 'assets/boss.gif');
 
 		this.load.audio('point', 'assets/Collect_Point_00.mp3');
@@ -65,8 +65,8 @@ class Level extends Phaser.State {
 		let dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);	
 
 		this.pad.addCallbacks(this, { onConnect: function () {
-			let rect = this.pad.getButton(Phaser.Gamepad.XBOX360_X);
-    		let circ = this.pad.getButton(Phaser.Gamepad.XBOX360_B);
+			let rect = this.pad.getButton(Phaser.Gamepad.XBOX360_LEFT_TRIGGER);
+    		let circ = this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER);
 			rect.onDown.add(this.clearBadBox, this);
     		circ.onDown.add(this.clearOkBox, this);
 		} });
@@ -116,6 +116,19 @@ class Level extends Phaser.State {
 	}
 
 	update() {
+	    if (this.pad.connected)
+	    {
+	        var rightStickX = this.pad.axis(Phaser.Gamepad.XBOX360_STICK_RIGHT_X);
+	        if (rightStickX)
+	        {
+	        	if(rightStickX > 0){
+	            	this.catchRight();
+	        	}
+	        	else {
+        			this.catchLeft();
+	        	}
+	        }
+	    }
 		// item generator
 		this.timerCounter += this.game.time.elapsed;
 		if (this.timerCounter > 1000 && this.itemsToNextLevel > 0) {

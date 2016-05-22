@@ -9,6 +9,8 @@ class Preview extends Phaser.State {
 		// music
 		let music = this.add.audio('music', 0.5, true);
 		music.play();
+		music.stop();
+		this.game.state.start('Level');
 	}
 
 }

@@ -3,7 +3,7 @@ class Intro extends Phaser.State {
 
 	preload() {
 		this.load.audio('music', 'assets/music.mp3');
-		this.load.image('logo', 'assets/logo.png')
+		this.load.image('logo', 'assets_8bit/logo.png')
 	}
 
 	create() {
@@ -22,13 +22,14 @@ class Intro extends Phaser.State {
 
 		// logo
 		let logo = this.add.sprite(this.game.world.centerX, -200, 'logo');
+		logo.scale.setTo(0.5, 0.5);
 		logo.anchor.set(0.5);
 		logo.enableUpdate = true;
-		let animation = this.add.tween(logo).to( { y: this.game.world.centerY-(logo.height/2) }, 7000, "Quart.easeOut");
+		let animation = this.add.tween(logo).to( { y: this.game.world.centerY-(logo.height/2) +100 }, 7000, "Quart.easeOut");
 		animation.start();
 		animation.killOnComplete = true;
 		animation.onComplete.add(function() {
-	  		this.game.state.start('Level');
+	  		this.game.state.start('Preview');
 	  		music.stop();
 		}, logo);
 	}
