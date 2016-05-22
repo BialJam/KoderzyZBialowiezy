@@ -39,7 +39,6 @@ class Level extends Phaser.State {
 		this.border = this.game.world._height - 40;
 		this.missed = 0;
 		this.availbleMisses = 6;
-		this.lastTime = 0;
 		this.level = 0;
 		
 	}
@@ -105,7 +104,6 @@ class Level extends Phaser.State {
 		this.generateCurrentItemRequest();
 
 		// timers
-		this.lastTime = this.game.time.now;
 		this.timerCounter = 0;
 
 		this.pointSound = this.add.audio('point');
@@ -122,9 +120,12 @@ class Level extends Phaser.State {
 		this.timerCounter += this.game.time.elapsed;
 		if (this.timerCounter > 1000 && this.itemsToNextLevel > 0) {
 			this.timerCounter = 0;
-			if (Phaser.Utils.chanceRoll(30)) {
+			let chanceNormal = Phaser.Utils.chanceRoll(40);
+			let chanceCurrent = Phaser.Utils.chanceRoll(30);
+			if (chanceNormal) {
 				this.generateParticle();
-				this.lastTime = this.timerCounter;
+			} else if (chanceCurrent) {
+				this.generateParticle(this.currentItem.type);
 			}
 		}
 
@@ -172,9 +173,11 @@ class Level extends Phaser.State {
 
 	// generate some data functions
 
-	generateParticle() {
-		let rand = this.getRandomNumber(this.itemsCount);
-		let type = this.itemsMap[rand];
+	generateParticle(type = null) {
+		if (!type) {
+			let rand = this.getRandomNumber(this.itemsCount);
+			type = this.itemsMap[rand];
+		}
 		let item = new GameParticle(this.game, this.game.world.centerX, -this.itemSize, type);
 		item.body.velocity.y = this.speed;
 		this.particleGroup.add(item);
