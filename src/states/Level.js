@@ -24,7 +24,8 @@ class Level extends Phaser.State {
 		this.load.audio('craft', 'assets/Craft_00.mp3');
 		this.load.audio('death', 'assets/Hero_Death_00.mp3');
 		this.load.audio('move', 'assets/Jump_00.mp3');
-
+		this.load.audio('wrong_move', 'assets/Explosion_03.mp3');
+		
 		this.itemsCount = this.itemsMap.length;
 		for(var item in this.itemsMap) {
 			var name = this.itemsMap[item];
@@ -114,6 +115,7 @@ class Level extends Phaser.State {
 		this.craftSound = this.add.audio('craft');
 		this.deathSound = this.add.audio('death');
 		this.moveSound = this.add.audio('move');
+		this.wrongMoveSound = this.add.audio('wrong_move');
 	}
 
 	update() {
@@ -284,17 +286,21 @@ class Level extends Phaser.State {
 		this.generateCurrentItemRequest();
 		if (this.okBox.group.length != this.currentItem.count) {
 			this.missed++;
+			this.wrongMoveSound.play();
+		} else {
+			this.moveSound.play();
 		}
 		this.okBox.clearBox();
-		this.moveSound.play();
 	}
 
 	clearBadBox() {
 		if (this.badBox.group.length < 4) {
 			this.missed++;
+			this.wrongMoveSound.play();
+		} else { 
+			this.moveSound.play();
 		}
 		this.badBox.clearBox();
-		this.moveSound.play();
 	}
 }
 
