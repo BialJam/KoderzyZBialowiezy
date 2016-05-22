@@ -59,7 +59,7 @@ class DropBox extends Phaser.Sprite {
 	}
 
 	update() {
-		this.game.debug.body(this);
+		//this.game.debug.body(this);
 		this.life.updateCrop();
 	}
 

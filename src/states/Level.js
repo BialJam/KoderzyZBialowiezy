@@ -1,6 +1,7 @@
 import GameParticle from 'objects/GameParticle'
 import DumpSprite from 'objects/DumpSprite'
 import DropBox from 'objects/DropBox'
+import Boss from 'objects/Boss'
 
 class Level extends Phaser.State {
 
@@ -19,19 +20,21 @@ class Level extends Phaser.State {
 		this.load.image('line', 'assets/line.png');
 		this.load.image('trash', 'assets/trash.png');
 		this.load.image('box', 'assets/box.png');
+		this.load.image('boss', 'assets/boss.gif');
 
 		this.load.audio('point', 'assets/Collect_Point_00.mp3');
 		this.load.audio('craft', 'assets/Craft_00.mp3');
 		this.load.audio('death', 'assets/Hero_Death_00.mp3');
 		this.load.audio('level', 'assets/Jingle_Achievement_00.mp3');
-
+		this.load.audio('move', 'assets/Jump_00.mp3');
+		this.load.audio('wrong_move', 'assets/Explosion_03.mp3');
 		this.itemsCount = this.itemsMap.length;
 		for(var item in this.itemsMap) {
 			var name = this.itemsMap[item];
 			this.load.image(name, 'assets/' + name + '.png');
 		}
 		this.itemSize = 100;
-		this.speed = 100;
+		this.speed = 140;
 		this.time = 0
 		this.border = this.game.world._height - 40;
 		this.missed = 0;
@@ -92,14 +95,12 @@ class Level extends Phaser.State {
 		this.particleGroup = this.game.add.group();
 		this.flyGroup = this.game.add.group();
 		this.flewOverGroup = this.game.add.group();
-
+		this.boss = new Boss(this.game, 0, 8);
 		// items counter and texts
 		let style = { font: "32px Press Start 2P", align: "center", fill: "white" };
 		this.addStaticText(style);
-		this.trashCountText = this.game.add.text(this.game.world._width - 170, 40, '0' , style)
-		this.itemsCountText = this.game.add.text(this.game.world._width - 45, 40, '', style)
-		this.levelText = this.game.add.text(this.game.world.centerX - 185, 20, '0', style)
-		this.trashCountText.anchor.set(0.5);
+		this.itemsCountText = this.game.add.text(this.game.world._width - 55, 82, '', style)
+		this.levelText = this.game.add.text(this.game.world._width - 50, 22, '0', style)
 		this.itemsCountText.anchor.set(0.5);
 		this.generateCurrentItemRequest();
 
@@ -111,6 +112,9 @@ class Level extends Phaser.State {
 		this.craftSound = this.add.audio('craft');
 		this.deathSound = this.add.audio('death');
 		this.levelSound = this.add.audio('level');
+		this.moveSound = this.add.audio('move');
+		this.wrongMoveSound = this.add.audio('wrong_move');
+
 	}
 
 	update() {
@@ -141,14 +145,11 @@ class Level extends Phaser.State {
 	// texts and state update functions  
 
 	addStaticText(style) {
-		let trashText = this.game.add.text(this.game.world._width - 290, 40, 'TRASH    ITEMS:' , style)
-		trashText.anchor.set(0.5);
-		let levelText = this.game.add.text(this.game.world.centerX - 290, 20, 'LEVEL:' , style)
-		trashText.anchor.set(0.5);
+		let levelText = this.game.add.text(this.game.world._width - 105, 40, 'LEVEL:' , style)
+		levelText.anchor.set(0.5);
 	}
 
 	updateText() {
-		this.trashCountText.setText(this.badBox.group.length.toString());
 		let count = this.currentItem.count - this.okBox.group.length;
 		this.itemsCountText.setText('x  ' + count.toString());
 	}
@@ -160,8 +161,9 @@ class Level extends Phaser.State {
 		}
 		if(this.missed > 0) {
 			this.missed--;
+			this.boss.dicreaseAngryLevel();
 		}
-		this.speed += 30;
+		this.speed += 50;
 		this.level += 1
 		this.levelText.setText(this.level);
 		this.itemsToNextLevel = 30;
@@ -191,7 +193,7 @@ class Level extends Phaser.State {
 		this.currentItem = {
 			type: type,
 			count: count,
-			item: this.game.add.sprite(this.game.world._width - 140, 10, type)
+			item: this.game.add.sprite(this.game.world._width - 150, 50, type)
 		};
 		this.currentItem.item.scale.setTo(0.6,0.6);
 		this.updateText();
@@ -199,7 +201,7 @@ class Level extends Phaser.State {
 
 	getRandomNumber(size, start=0) {
 		return Math.floor((Math.random()*size) + start);
-	}
+	} 
 
 
 
@@ -208,6 +210,7 @@ class Level extends Phaser.State {
 	collision(obj1, obj2) {
 		if (!(this.goodItems.indexOf(obj2.key) > -1 && obj2.key != this.currentItem.type)) {
 			this.missed++;
+			this.boss.increaseAngryLevel();
 		}
 		this.particleGroup.remove(obj2);
 		this.checkNextLevel();
@@ -234,6 +237,7 @@ class Level extends Phaser.State {
 			this.flewOverGroup.add(obj);
 			this.deathSound.play();
 			this.missed++;
+			this.boss.increaseAngryLevel();
 		} else {
 			obj.body.velocity.x = 0;
 			this.okBox.addC(obj);
@@ -249,6 +253,7 @@ class Level extends Phaser.State {
 			this.flewOverGroup.add(obj);
 			this.deathSound.play();
 			this.missed++;
+			this.boss.increaseAngryLevel();
 		}
 		else {
 			obj.body.velocity.x = 0;
@@ -257,6 +262,7 @@ class Level extends Phaser.State {
 			this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1500, Phaser.Easing.Linear.None, true);
 			if (this.goodItems.indexOf(obj.key) > -1) {
 				this.missed++;
+				this.boss.increaseAngryLevel();
 			}
 		}
 		this.updateText();
@@ -295,6 +301,10 @@ class Level extends Phaser.State {
 		this.generateCurrentItemRequest();
 		if (this.okBox.group.length != this.currentItem.count) {
 			this.missed++;
+			this.boss.increaseAngryLevel();
+			this.wrongMoveSound.play();
+		} else {
+			this.moveSound.play();
 		}
 		this.okBox.clearBox();
 	}
@@ -302,6 +312,10 @@ class Level extends Phaser.State {
 	clearBadBox() {
 		if (this.badBox.group.length < 4) {
 			this.missed++;
+			this.boss.increaseAngryLevel();
+			this.wrongMoveSound.play();
+		} else { 
+			this.moveSound.play();
 		}
 		this.badBox.clearBox();
 	}
