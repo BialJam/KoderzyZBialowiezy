@@ -31,6 +31,7 @@ class Lose extends Phaser.State {
 			buttonX.onDown.add(this.end, this);
 
 		this.worker = new Worker(this.game, this.game.world.centerX, this.game.world.centerY, 'character');
+		this.worker.animations.play('walk', 15, true);
 		let tween = this.game.add.tween(this.worker).to({ x: this.game.world.width + 20 }, 2500, Phaser.Linear, true, 200);
 	}
 
