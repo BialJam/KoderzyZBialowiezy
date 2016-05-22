@@ -71,7 +71,6 @@ class Level extends Phaser.State {
     		circ.onDown.add(this.clearOkBox, this);
 		} });
 
-
 		leftKey.onDown.add(this.catchLeft, this);
 		rightKey.onDown.add(this.catchRight, this);
 
