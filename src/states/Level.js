@@ -40,8 +40,8 @@ class Level extends Phaser.State {
 		// sprites
 		this.game.add.sprite(0, 0, 'background');
 		this.game.add.sprite(this.game.world.centerX-70, 0, 'line');
-		this.game.add.sprite(this.game.world.centerX+100, this.game.world._height - 190, 'box');
-		this.game.add.sprite(this.game.world.centerX-280, this.game.world._height - 190, 'trash');
+		// this.game.add.sprite(this.game.world.centerX+100, this.game.world._height - 190, 'box');
+		// this.game.add.sprite(this.game.world.centerX-280, this.game.world._height - 190, 'trash');
 		
 		// music
 		this.music = this.add.audio('music', 0.5, true);
@@ -80,16 +80,12 @@ class Level extends Phaser.State {
 
 		this.catchZone = new DumpSprite(this.game, this.game.world.centerX, this.game.world._height - 100);
 
-		this.okBox = new DropBox(this.game, this.game.world.centerX + 200, this.game.world._height - 100);
-		this.badBox = new DropBox(this.game, this.game.world.centerX - 220, this.game.world._height - 100);
+		this.okBox = new DropBox(this.game, this.game.world.centerX + 200, this.game.world._height - 100, 'box');
+		this.badBox = new DropBox(this.game, this.game.world.centerX - 220, this.game.world._height - 100, 'trash');
 
 		this.particleGroup = this.game.add.group();
 		this.flyGroup = this.game.add.group();
 		this.flewOverGroup = this.game.add.group();
-
-		this.okBoxGroup = this.game.add.group();
-		this.badBoxGroup = this.game.add.group();
-
 
 		// items counter and texts
 		let style = { font: "32px Press Start 2P", align: "center", fill: "white" };
@@ -138,8 +134,8 @@ class Level extends Phaser.State {
 	}
 
 	updateText() {
-		this.trashCountText.setText(this.badBoxGroup.length.toString());
-		let count = this.currentItem.count - this.okBoxGroup.length;
+		this.trashCountText.setText(this.badBox.children.length.toString());
+		let count = this.currentItem.count - this.badBox.children.length;
 		this.itemsCountText.setText('x  ' + count.toString());
 	}
 
@@ -150,7 +146,6 @@ class Level extends Phaser.State {
 		this.speed += 50;
 		this.level += 1
 	}
-
 
 
 	// generate some data functions
@@ -205,25 +200,25 @@ class Level extends Phaser.State {
 
 	inOkBox(box, obj) {
 		this.flyGroup.remove(obj);
-		if(this.okBoxGroup.length >= this.currentItem.count || obj.key != this.currentItem.type) {
+		if(this.okBox.children.length >= this.currentItem.count || obj.key != this.currentItem.type) {
 			this.flewOverGroup.add(obj);
 			this.missed++;
 		} else {
 			obj.body.velocity.x = 0;
-			this.okBoxGroup.add(obj);
+			this.okBox.addC(obj);
 		}
 		this.updateText();
 	}
 
 	inBadBox(box, obj) {
 		this.flyGroup.remove(obj);
-		if(this.badBoxGroup.length >= 4) {
+		if(this.badBox.children.length >= 4) {
 			this.flewOverGroup.add(obj);
 			this.missed++;
 		}
 		else {
 			obj.body.velocity.x = 0;
-			this.badBoxGroup.add(obj);
+			this.badBox.addC(obj);
 			if (this.goodItems.indexOf(obj.key) > -1) {
 				this.missed++;
 			}
@@ -256,18 +251,18 @@ class Level extends Phaser.State {
 
 	clearOkBox() {
 		this.generateCurrentItemRequest();
-		if (this.okBoxGroup.length != this.currentItem.count) {
+		if (this.okBox.group.length != this.currentItem.count) {
 			this.missed++;
 		}
-		this.okBoxGroup.removeAll();
+		this.okBox.clearBox();
 		this.updateText();
 	}
 
 	clearBadBox() {
-		if (this.badBoxGroup.length < 4) {
+		if (this.badBox.group.length < 4) {
 			this.missed++;
 		}
-		this.badBoxGroup.removeAll();
+		this.badBox.clearBox();
 		this.updateText();
 	}
 }
