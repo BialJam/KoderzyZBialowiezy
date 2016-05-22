@@ -2,15 +2,16 @@
 class Intro extends Phaser.State {
 
 	preload() {
-		this.load.audio('music', 'assets/music.mp3');
+		this.load.audio('explosion', 'assets/explosion.wav');
 		this.load.image('logo', 'assets_8bit/logo.png')
 	}
 
 	create() {
 		this.stage.backgroundColor = '#000'
 		// music
-		let music = this.add.audio('music', 0.5, true);
-		//music.play();
+		this.music = this.add.audio('explosion');
+		
+		this.counter = 0;
 
 		// copyrights text
 		let style = { font: "26px Press Start 2P", align: "center", fill: "white" };
@@ -25,13 +26,20 @@ class Intro extends Phaser.State {
 		logo.scale.setTo(0.5, 0.5);
 		logo.anchor.set(0.5);
 		logo.enableUpdate = true;
+		
 		let animation = this.add.tween(logo).to( { y: this.game.world.centerY-(logo.height/2) +100 }, 7000, "Quart.easeOut");
 		animation.start();
 		animation.killOnComplete = true;
 		animation.onComplete.add(function() {
 	  		this.game.state.start('Preview');
-	  		music.stop();
 		}, logo);
+	}
+
+	update() {
+		this.counter++;
+		if (this.counter == 70) {
+			this.music.play();
+		}
 	}
 
 }
