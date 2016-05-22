@@ -13,6 +13,7 @@ class Preview extends Phaser.State {
 		this.music = this.add.audio('music', 0.5, true);
 		this.music.play();
 		this.worker = new Worker(this.game, 10, this.game.world.centerY, 'character');
+		this.worker.animations.play('walk', 20, true);
 		let tween = this.game.add.tween(this.worker).to({ x: this.game.world.centerX - 5 }, 2500, Phaser.Linear, true);
 		tween.onComplete.add(this.onWalkComplete, this);
 
