@@ -1,8 +1,10 @@
+import Worker from 'objects/Worker'
 
 class Lose extends Phaser.State {
 
 	preload() {
 		this.load.audio('music', 'assets/game_over.mp3');
+		this.load.spritesheet('character', 'assets/professor_walk.png', 64, 64, 36);
 	}
 
 	create() {
@@ -26,6 +28,9 @@ class Lose extends Phaser.State {
 		let buttonX = pad.getButton(Phaser.Gamepad.XBOX360_A);
 		space.onDown.add(this.end, this);
 		buttonX.onDown.add(this.end, this);
+
+		this.worker = new Worker(this.game, this.game.world.centerX, this.game.world.centerY, 'character');
+		let tween = this.game.add.tween(this.worker).to({ x: this.game.world.width + 20 }, 2500, Phaser.Linear, true, 200);
 	}
 
 	end () {
