@@ -138,7 +138,7 @@ class Level extends Phaser.State {
 
 	updateText() {
 		this.trashCountText.setText(this.badBox.group.length.toString());
-		let count = this.currentItem.count - this.badBox.group.length;
+		let count = this.currentItem.count - this.okBox.group.length;
 		this.itemsCountText.setText('x  ' + count.toString());
 	}
 
@@ -258,7 +258,6 @@ class Level extends Phaser.State {
 			this.missed++;
 		}
 		this.okBox.clearBox();
-		this.updateText();
 	}
 
 	clearBadBox() {
@@ -266,7 +265,6 @@ class Level extends Phaser.State {
 			this.missed++;
 		}
 		this.badBox.clearBox();
-		this.updateText();
 	}
 }
 
