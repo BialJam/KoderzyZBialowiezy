@@ -12,7 +12,7 @@ class Level extends Phaser.State {
 
 		this.itemsMap = ['shit', 'used_condom', 'bomb', 'glock','brick', 'water_melon', 'banana', 'cola', 'durex', 'oreo', 'snickers'];
 		this.badItems = ['shit', 'used_condom', 'bomb', 'glock', 'brick'];
-		this.goodItems = ['water_melon', 'banana', 'brick', 'cola', 'durex', 'oreo', 'snickers'];
+		this.goodItems = ['water_melon', 'banana', 'cola', 'durex', 'oreo', 'snickers'];
 
 		this.load.audio('music', 'assets/music.mp3');
 		this.load.image('background', 'assets/background.png');
@@ -198,7 +198,7 @@ class Level extends Phaser.State {
 		this.group.remove(obj);
 		this.destGroup.add(obj);
 		obj.body.velocity.y = 0;
-		obj.body.velocity.x = this.direction * 100;
+		obj.body.velocity.x = this.direction * 300;
 		this.game.add.tween(obj).to( { angle: 90 }, 1500, Phaser.Easing.Linear.None, true, 500);
     	this.game.add.tween(obj.scale).to( { x: 0.5, y: 0.5 }, 1500, Phaser.Easing.Linear.None, true, 500);
 	}
@@ -264,10 +264,11 @@ class Level extends Phaser.State {
 	}
 
 	clearBadBox() {
-		this.badBoxGroup.removeAll();
+		alert(this.badBoxGroup.length);
 		if (this.badBoxGroup.length < 4) {
 			this.missed++;
 		}
+		this.badBoxGroup.removeAll();
 		this.updateText();
 	}
 }
