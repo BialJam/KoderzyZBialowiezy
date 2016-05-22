@@ -10,8 +10,8 @@ class Level extends Phaser.State {
 
 	preload() {
 
-		this.itemsMap = ['shit', 'used_condom', 'bomb', 'glock', 'water_melon', 'banana', 'brick', 'cola', 'durex', 'oreo', 'snickers'];
-		this.badItems = ['shit', 'used_condom', 'bomb', 'glock'];
+		this.itemsMap = ['shit', 'used_condom', 'bomb', 'glock','brick', 'water_melon', 'banana', 'cola', 'durex', 'oreo', 'snickers'];
+		this.badItems = ['shit', 'used_condom', 'bomb', 'glock', 'brick'];
 		this.goodItems = ['water_melon', 'banana', 'brick', 'cola', 'durex', 'oreo', 'snickers'];
 
 		this.load.audio('music', 'assets/music.mp3');
