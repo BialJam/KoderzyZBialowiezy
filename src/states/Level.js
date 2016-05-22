@@ -255,11 +255,11 @@ class Level extends Phaser.State {
 	}
 
 	clearOkBox() {
-		this.okBoxGroup.removeAll();
 		this.generateCurrentItemRequest();
 		if (this.okBoxGroup.length != this.currentItem.count) {
 			this.missed++;
 		}
+		this.okBoxGroup.removeAll();
 		this.updateText();
 	}
 
