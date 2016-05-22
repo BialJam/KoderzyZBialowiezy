@@ -264,7 +264,6 @@ class Level extends Phaser.State {
 	}
 
 	clearBadBox() {
-		alert(this.badBoxGroup.length);
 		if (this.badBoxGroup.length < 4) {
 			this.missed++;
 		}
